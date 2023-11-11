@@ -1,7 +1,8 @@
 plugins {
-    //trick: for the same plugin versions in all sub-modules
-    id("com.android.library").version("8.1.3").apply(false)
-    kotlin("multiplatform").version("1.8.21").apply(false)
+    alias(deps.plugins.android.application) apply  false
+    alias(deps.plugins.android.library) apply  false
+    alias(deps.plugins.kotlin.multiplatform) apply  false
+    alias(deps.plugins.kotlin.cocoapods) apply  false
 }
 
 tasks.register("clean", Delete::class) {

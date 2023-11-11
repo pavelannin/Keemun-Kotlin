@@ -1,12 +1,13 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("native.cocoapods")
-    id("com.android.library")
+    alias(deps.plugins.kotlin.multiplatform)
+    alias(deps.plugins.kotlin.cocoapods)
+    alias(deps.plugins.android.library)
 }
 
-@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     android {
         compilations.all {
@@ -15,9 +16,6 @@ kotlin {
             }
         }
     }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
 
     cocoapods {
         summary = "Some description for the Shared Module"
@@ -28,24 +26,17 @@ kotlin {
             baseName = "shared"
         }
     }
-    
+
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                //put your multiplatform dependencies here
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonMain.dependencies {
+            // put your Multiplatform dependencies here
         }
     }
 }
 
 android {
     namespace = "com.github.pavelannin.keemun"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 24
     }
