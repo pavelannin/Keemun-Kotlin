@@ -24,4 +24,5 @@ rootProject.name = "Keemun"
 
 include(
     ":core",
+    ":decompose",
 )
