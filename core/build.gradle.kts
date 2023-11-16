@@ -29,13 +29,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
+            implementation(deps.kotlin.std.common)
+            api(deps.kotlin.coroutines.core)
+        }
+        commonTest.dependencies {
+            implementation(deps.kotlin.test)
+            implementation(deps.kotlin.coroutines.test)
         }
     }
 }
 
 android {
-    namespace = "com.github.pavelannin.keemun"
+    namespace = "io.github.pavelannin.keemun.core"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
