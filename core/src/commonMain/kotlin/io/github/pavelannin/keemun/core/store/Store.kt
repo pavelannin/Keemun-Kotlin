@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
+import kotlin.native.HiddenFromObjC
+import kotlin.native.ObjCName
 
 /**
  * A common interface, the implementation of which controls all entities and starts the entire processing mechanism.
@@ -19,7 +21,8 @@ import kotlinx.coroutines.runBlocking
  * @property state Flow of state.
  * @property scope The main scope on which all coroutines will be launched.
  */
-interface Store<State : Any, Msg : Any> {
+@ObjCName(swiftName = "KeemunStore")
+interface Store<out State : Any, in Msg : Any> {
     val state: StateFlow<State>
     val scope: CoroutineScope
 
@@ -28,31 +31,34 @@ interface Store<State : Any, Msg : Any> {
 
     /** Sending messages synchronously. */
     suspend infix fun syncDispatch(msg: Msg)
-
-    companion object {
-        operator fun <State : Any, Msg : Any, Effect : Any, Deps : Any> invoke(
-            previousState: State?,
-            params: StoreParams<State, Msg, Effect, Deps>,
-            coroutineScope: CoroutineScope,
-        ): Store<State, Msg> = DefaultStore(
-            previousState = previousState,
-            params = params,
-            coroutineScope = coroutineScope,
-        )
-    }
 }
 
 /**
- * [State] - common state, [Msg] - messages with which we will transform the [State].
+ * Creates an implementation of [Store].
  *
  * @param previousState Previous state. Not null if the process was killed by the system and restored to its previous state.
+ * @param params Parameters for creating [Store].
+ * @param coroutineScope The main scope on which all coroutines will be launched.
+ *
+ * @see Store
  */
-private class DefaultStore<State : Any, Msg : Any, Effect : Any, Deps : Any>(
+@HiddenFromObjC
+fun <State : Any, Msg : Any, Effect : Any, Deps : Any> Store(
+    previousState: State?,
+    params: StoreParams<State, Msg, Effect, Deps>,
+    coroutineScope: CoroutineScope,
+): Store<State, Msg> = DefaultStore(
+    previousState = previousState,
+    params = params,
+    coroutineScope = coroutineScope,
+)
+
+@HiddenFromObjC
+private class DefaultStore<State : Any, in Msg : Any, in Effect : Any, in Deps : Any>(
     previousState: State?,
     private val params: StoreParams<State, Msg, Effect, Deps>,
     coroutineScope: CoroutineScope,
 ) : Store<State, Msg> {
-
     private val _state: MutableStateFlow<State>
     private val _messages = MutableSharedFlow<Msg>(extraBufferCapacity = Int.MAX_VALUE)
 
@@ -77,11 +83,6 @@ private class DefaultStore<State : Any, Msg : Any, Effect : Any, Deps : Any>(
             }
     }
 
-    override infix fun dispatch(msg: Msg) {
-        scope.launch { syncDispatch(msg) }
-    }
-
-    override suspend infix fun syncDispatch(msg: Msg) {
-        _messages.emit(msg)
-    }
+    override fun dispatch(msg: Msg) { scope.launch { syncDispatch(msg) } }
+    override suspend infix fun syncDispatch(msg: Msg) { _messages.emit(msg) }
 }
