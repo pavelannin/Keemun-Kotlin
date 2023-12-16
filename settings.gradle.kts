@@ -25,4 +25,5 @@ rootProject.name = "Keemun"
 include(
     ":core",
     ":connectors:decompose",
+    ":connectors:swift-ui",
 )
