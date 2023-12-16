@@ -1,0 +1,5 @@
+target 'iOS' do
+  use_frameworks!
+  platform :ios, '15.0'
+  pod 'FeatureCounter', :path => '../counter'
+end

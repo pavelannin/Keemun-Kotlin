@@ -26,4 +26,6 @@ include(
     ":core",
     ":connectors:decompose",
     ":connectors:swift-ui",
+    ":sample:counter",
+    ":sample:android",
 )
