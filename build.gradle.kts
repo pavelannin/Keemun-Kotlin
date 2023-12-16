@@ -5,6 +5,7 @@ plugins {
     alias(deps.plugins.kotlin.android) apply false
     alias(deps.plugins.kotlin.cocoapods) apply false
     alias(deps.plugins.kotlin.serialization) apply false
+    alias(deps.plugins.maven.publish) apply false
 }
 
 tasks.register("clean", Delete::class) {

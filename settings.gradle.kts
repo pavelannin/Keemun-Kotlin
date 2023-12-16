@@ -24,6 +24,5 @@ rootProject.name = "Keemun"
 
 include(
     ":core",
-    ":decompose",
-    ":sample:androidApp",
+    ":connectors:decompose",
 )
