@@ -15,9 +15,6 @@ kotlin {
             api(project(":core"))
             implementation(deps.kotlin.std.common)
         }
-        iosMain.dependencies {
-            api(project(":core"))
-        }
     }
 
     kotlin.sourceSets.all {
@@ -30,7 +27,7 @@ mavenPublishing {
     val artifactId = "keemun-swiftui"
     publishToMavenCentral(SonatypeHost.S01)
     signAllPublications()
-    coordinates("io.github.pavelannin", artifactId, "1.0.0")
+    coordinates("io.github.pavelannin", artifactId, "1.0.1")
     pom {
         name.set(artifactId)
         description.set("Keemun is a multiplatform Kotlin framework that provides a way to write shared code using The Elm Architecture pattern.")

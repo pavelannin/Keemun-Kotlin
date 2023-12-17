@@ -20,7 +20,6 @@ kotlin {
         podfile = project.file("../ios/Podfile")
         framework {
             baseName = "FeatureCounter"
-            export(deps.keemun.core)
             export(deps.keemun.swiftui)
         }
     }
@@ -37,8 +36,7 @@ kotlin {
             api(deps.bundles.androidX.compose)
         }
         iosMain.dependencies {
-            api(deps.keemun.core)
-            api(deps.keemun.swiftui)
+            implementation(deps.keemun.swiftui)
         }
     }
 }
