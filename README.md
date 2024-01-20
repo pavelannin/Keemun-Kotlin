@@ -138,12 +138,13 @@ val effectHandler = EffectHandler<Effect, InternalMsg> { effect, dispatch ->
 }
 ```
 
-## Init
-`Init` is the place for initialization. Its method takes `previousState` (if the state is being persisted), and returns the initializing `state` and the initial set of side-effects.
+## Start
+`Start` is the place for initialization. Its method takes `savedState` (if the state is being persisted), and returns the initializing 
+`state` and the initial set of side-effects.
 
 ```kotlin
-val init = Init<CounterState, CounterEffect> { previous ->
-    val state = previous ?: CounterState(
+val start = Start<CounterState, CounterEffect> { savedState ->
+    val state = savedState ?: CounterState(
         syncCount = deps,
         asyncCount = deps,
         isAsyncRunning = false,
@@ -153,12 +154,12 @@ val init = Init<CounterState, CounterEffect> { previous ->
 ```
 
 ## StoreParams
-`StoreParams` is a container that holds `Init`, `Update`, and `EffectHandler` in one place for creating a `Store`. 
+`StoreParams` is a container that holds `Start`, `Update`, and `EffectHandler` in one place for creating a `Store`. 
 `StoreParams` provides several convenient overridden functions for creating it with optional arguments.
 
 ```kotlin
 val storeParams = StoreParams<State, Msg, Effect, Deps>(
-    init = { },
+    start = { },
     update = { },
     effectHandler = { },
 )
