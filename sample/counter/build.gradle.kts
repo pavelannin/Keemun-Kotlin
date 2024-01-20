@@ -13,7 +13,7 @@ kotlin {
 
     cocoapods {
         name = "FeatureCounter"
-        version = "1.0"
+        version = "1.1.0"
         summary = "Multiplatform sample feature"
         homepage = "https://github.com/pavelannin/Keemun-Kotlin"
         ios.deploymentTarget = "13.0"

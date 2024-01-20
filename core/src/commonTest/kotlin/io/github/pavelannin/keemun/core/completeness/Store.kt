@@ -38,11 +38,11 @@ private val effectHandler = EffectHandler<CompletenessEffect, CompletenessMsg> {
 }
 
 fun store(scope: CoroutineScope, repeatCount: Int) = Store(
-    previousState = null,
+    savedState = null,
     coroutineScope = scope,
     params = StoreParams(
-        init = { previous ->
-            val state = previous ?: CompletenessState(flow1 = 0, flow2 = 0, flow3 = 0)
+        start = { savedState ->
+            val state = savedState ?: CompletenessState(flow1 = 0, flow2 = 0, flow3 = 0)
             state to setOf(
                 CompletenessEffect.StartIncFlow1(repeatCount),
                 CompletenessEffect.StartIncFlow2(repeatCount),

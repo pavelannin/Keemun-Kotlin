@@ -19,66 +19,66 @@ import kotlinx.serialization.serializer
  *
  * @see FeatureConnector
  */
-interface KeemunComponentFeatureConnector<State : Any, Msg : Any> : ComponentContext, CoroutineScopeOwner, FeatureConnector<State, Msg>
+interface KeemunComponentConnector<State : Any, Msg : Any> : ComponentContext, CoroutineScopeOwner, FeatureConnector<State, Msg>
 
 /**
- * Creates a [KeemunComponentFeatureConnector].
+ * Creates a [KeemunComponentConnector].
  *
- * @param componentContext The context for aggregating the creation of [KeemunComponentFeatureConnector].
+ * @param componentContext The context for aggregating the creation of [KeemunComponentConnector].
  * @param storeCreator The function for creating the [Store].
  * @param stateSerializer The serializer used for saving and restoring the state.
  *
- * @see KeemunComponentFeatureConnector
+ * @see KeemunComponentConnector
  */
-fun <State : Any, Msg : Any> KeemunComponentFeatureConnector(
+fun <State : Any, Msg : Any> KeemunComponentConnector(
     componentContext: ComponentContext,
-    storeCreator: (previousState: State?, scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
+    storeCreator: (savedState: State?, scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
     stateSerializer: KSerializer<State>,
-): KeemunComponentFeatureConnector<State, Msg> = DefaultComponentFeatureConnector(
+): KeemunComponentConnector<State, Msg> = DefaultComponentConnector(
     componentContext = componentContext,
     storeCreator = storeCreator,
     stateSerializer = stateSerializer,
 )
 
 /**
- * Creates a [KeemunComponentFeatureConnector].
+ * Creates a [KeemunComponentConnector].
  *
- * @param componentContext The context for aggregating the creation of [KeemunComponentFeatureConnector].
+ * @param componentContext The context for aggregating the creation of [KeemunComponentConnector].
  * @param storeCreator The function for creating the [Store].
  *
- * @see KeemunComponentFeatureConnector
+ * @see KeemunComponentConnector
  */
 @OptIn(InternalSerializationApi::class)
-inline fun <reified State : Any, Msg : Any> KeemunComponentFeatureConnector(
+inline fun <reified State : Any, Msg : Any> KeemunComponentConnector(
     componentContext: ComponentContext,
-    noinline storeCreator: (previousState: State?, scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
-) = KeemunComponentFeatureConnector(
+    noinline storeCreator: (savedState: State?, scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
+) = KeemunComponentConnector(
     componentContext = componentContext,
     storeCreator = storeCreator,
     stateSerializer = State::class.serializer(),
 )
 
 /**
- * Creates a [KeemunComponentFeatureConnector].
+ * Creates a [KeemunComponentConnector].
  *
- * @param componentContext The context for aggregating the creation of [KeemunComponentFeatureConnector].
+ * @param componentContext The context for aggregating the creation of [KeemunComponentConnector].
  * @param featureParams Parameters used for creation.
  * @param stateSerializer The serializer used for saving and restoring the state.
  *
- * @see KeemunComponentFeatureConnector
+ * @see KeemunComponentConnector
  */
 @OptIn(InternalSerializationApi::class)
-inline fun <reified State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunComponentFeatureConnector(
+inline fun <reified State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunComponentConnector(
     componentContext: ComponentContext,
     featureParams: FeatureParams<State, Msg, ViewState, ExternalMsg>,
     stateSerializer: KSerializer<State> = State::class.serializer(),
-): KeemunComponentFeatureConnector<ViewState, ExternalMsg> = object : KeemunComponentFeatureConnector<ViewState, ExternalMsg>,
+): KeemunComponentConnector<ViewState, ExternalMsg> = object : KeemunComponentConnector<ViewState, ExternalMsg>,
     ComponentContext by componentContext,
     CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
-    Store<ViewState, ExternalMsg> by KeemunComponentFeatureConnector(
+    Store<ViewState, ExternalMsg> by KeemunComponentConnector(
         componentContext = componentContext,
-        storeCreator = { previousState, scope ->
-            lazy { Store(previousState = previousState, params = featureParams.storeParams, coroutineScope = scope) }.let { lazyStore ->
+        storeCreator = { savedState, scope ->
+            lazy { Store(savedState = savedState, params = featureParams.storeParams, coroutineScope = scope) }.let { lazyStore ->
                 when (featureParams.startedOptions) {
                     FeatureStartedOptions.Eagerly -> lazyStore.apply { value }
                     FeatureStartedOptions.Lazily -> lazyStore
@@ -91,11 +91,11 @@ inline fun <reified State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> 
         messageTransform = featureParams.externalMessageTransform,
     ){}
 
-private class DefaultComponentFeatureConnector<State : Any, Msg : Any>(
+private class DefaultComponentConnector<State : Any, Msg : Any>(
     componentContext: ComponentContext,
-    storeCreator: (previousState: State?, scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
+    storeCreator: (savedState: State?, scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
     stateSerializer: KSerializer<State>,
-) : KeemunComponentFeatureConnector<State, Msg>,
+) : KeemunComponentConnector<State, Msg>,
     ComponentContext by componentContext,
     CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
     Store<State, Msg> {

@@ -3,16 +3,10 @@ package io.github.pavelannin.keemun.core
 import kotlinx.coroutines.CoroutineScope
 import kotlin.native.HiddenFromObjC
 
-/** Effect that will return the necessary dependencies to initialize the state. */
+/** Returns default state and effects by previous state. */
 @HiddenFromObjC
-fun interface PreInitEffect<out Deps> {
-    suspend operator fun invoke(): Deps
-}
-
-/** Returns default state and effects by previous state and dependencies. */
-@HiddenFromObjC
-fun interface Init<State, out Effect, in Deps> {
-    operator fun invoke(previous: State?, deps: Deps): Pair<State, Set<Effect>>
+fun interface Start<State, out Effect> {
+    operator fun invoke(savedState: State?): Pair<State, Set<Effect>>
 }
 
 /** Creates a next state and side-effects from a message and current state. */

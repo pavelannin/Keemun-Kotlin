@@ -22,7 +22,7 @@ import kotlin.native.ObjCName
  */
 @ObjCName(swiftName = "KeemunFeatureParams")
 data class FeatureParams<State : Any, Msg : Any, ViewState : Any, ExternalMsg : Any>(
-    val storeParams: StoreParams<State, Msg, *, *>,
+    val storeParams: StoreParams<State, Msg, *>,
     val viewStateTransform: StateTransform<State, ViewState>,
     val externalMessageTransform: (ExternalMsg) -> Msg,
     val startedOptions: FeatureStartedOptions,
@@ -31,10 +31,10 @@ data class FeatureParams<State : Any, Msg : Any, ViewState : Any, ExternalMsg : 
 /** @see FeatureParams */
 @HiddenFromObjC
 inline fun <State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> FeatureParams(
-    storeParams: StoreParams<State, Msg, *, *>,
+    storeParams: StoreParams<State, Msg, *>,
     viewStateTransform: StateTransform<State, ViewState>,
     startedOptions: FeatureStartedOptions = FeatureStartedOptions.Lazily,
-) = FeatureParams<State, Msg, ViewState, ExternalMsg>(
+): FeatureParams<State, Msg, ViewState, ExternalMsg> = FeatureParams(
     storeParams = storeParams,
     viewStateTransform = viewStateTransform,
     externalMessageTransform = { it },
@@ -44,10 +44,10 @@ inline fun <State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> FeatureP
 /** @see FeatureParams */
 @HiddenFromObjC
 inline fun <State : Any, Msg : Any, ExternalMsg : Any> FeatureParams(
-    storeParams: StoreParams<State, Msg, *, *>,
+    storeParams: StoreParams<State, Msg, *>,
     noinline externalMessageTransform: (ExternalMsg) -> Msg,
     startedOptions: FeatureStartedOptions = FeatureStartedOptions.Lazily,
-) = FeatureParams<State, Msg, State, ExternalMsg>(
+): FeatureParams<State, Msg, State, ExternalMsg> = FeatureParams(
     storeParams = storeParams,
     viewStateTransform = { it },
     externalMessageTransform = externalMessageTransform,
@@ -57,9 +57,9 @@ inline fun <State : Any, Msg : Any, ExternalMsg : Any> FeatureParams(
 /** @see FeatureParams */
 @HiddenFromObjC
 inline fun <State : Any, Msg : Any, ExternalMsg : Msg> FeatureParams(
-    storeParams: StoreParams<State, Msg, *, *>,
+    storeParams: StoreParams<State, Msg, *>,
     startedOptions: FeatureStartedOptions = FeatureStartedOptions.Lazily,
-) = FeatureParams<State, Msg, State, ExternalMsg>(
+): FeatureParams<State, Msg, State, ExternalMsg> = FeatureParams(
     storeParams = storeParams,
     viewStateTransform = { it },
     externalMessageTransform = { it },

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.runBlocking
 import kotlin.native.HiddenFromObjC
 import kotlin.native.ObjCName
 
@@ -36,27 +35,27 @@ interface Store<out State : Any, in Msg : Any> {
 /**
  * Creates an implementation of [Store].
  *
- * @param previousState Previous state. Not null if the process was killed by the system and restored to its previous state.
+ * @param savedState Previous saved state. Not null if the process was killed by the system and restored to its previous state.
  * @param params Parameters for creating [Store].
  * @param coroutineScope The main scope on which all coroutines will be launched.
  *
  * @see Store
  */
 @HiddenFromObjC
-fun <State : Any, Msg : Any, Effect : Any, Deps : Any> Store(
-    previousState: State?,
-    params: StoreParams<State, Msg, Effect, Deps>,
+fun <State : Any, Msg : Any, Effect : Any> Store(
+    savedState: State?,
+    params: StoreParams<State, Msg, Effect>,
     coroutineScope: CoroutineScope,
 ): Store<State, Msg> = DefaultStore(
-    previousState = previousState,
+    savedState = savedState,
     params = params,
     coroutineScope = coroutineScope,
 )
 
 @HiddenFromObjC
-private class DefaultStore<State : Any, in Msg : Any, in Effect : Any, in Deps : Any>(
-    previousState: State?,
-    private val params: StoreParams<State, Msg, Effect, Deps>,
+private class DefaultStore<State : Any, in Msg : Any, in Effect : Any>(
+    savedState: State?,
+    private val params: StoreParams<State, Msg, Effect>,
     coroutineScope: CoroutineScope,
 ) : Store<State, Msg> {
     private val _state: MutableStateFlow<State>
@@ -66,7 +65,7 @@ private class DefaultStore<State : Any, in Msg : Any, in Effect : Any, in Deps :
     override val scope: CoroutineScope = coroutineScope + Dispatchers.Default
 
     init {
-        val (defaultState, startEffects) = runBlocking { params.init(previousState, params.preEffectInit()) }
+        val (defaultState, startEffects) = params.start(savedState)
         _state = MutableStateFlow(value = defaultState)
         scope.launch { observeMessages(scope = this, defaultState, startEffects) }
     }

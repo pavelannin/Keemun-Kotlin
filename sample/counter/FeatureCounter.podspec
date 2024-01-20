@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'FeatureCounter'
-    spec.version                  = '1.0'
+    spec.version                  = '1.1.0'
     spec.homepage                 = 'https://github.com/pavelannin/Keemun-Kotlin'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''

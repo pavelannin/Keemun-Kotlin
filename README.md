@@ -138,22 +138,11 @@ val effectHandler = EffectHandler<Effect, InternalMsg> { effect, dispatch ->
 }
 ```
 
-## PreInitEffect
-`PreInitEffect` is the place where logic necessary for initializing the `Store` is executed. `PreInitEffect` returns a type that is later 
-used for initialization. In most scenarios, there is no need to use `PreInitEffect`.
-
-**NOTE** `EffectHandler` is a suspend function that **blocks** the current thread.
-
-```kotlin
-val preInitEffect = PreInitEffect { fetchCachedCounter() }
-```
-
 ## Init
-`Init` is the place for initialization. Its method takes `previousState` (if the state is being persisted) and `deps` (optionally received 
-from `PreInitEffect`), and returns the initializing `state` and the initial set of side-effects.
+`Init` is the place for initialization. Its method takes `previousState` (if the state is being persisted), and returns the initializing `state` and the initial set of side-effects.
 
 ```kotlin
-val init = Init<CounterState, CounterEffect, Int> { previous, deps ->
+val init = Init<CounterState, CounterEffect> { previous ->
     val state = previous ?: CounterState(
         syncCount = deps,
         asyncCount = deps,
@@ -164,12 +153,11 @@ val init = Init<CounterState, CounterEffect, Int> { previous, deps ->
 ```
 
 ## StoreParams
-`StoreParams` is a container that holds `PreInitEffect`, `Init`, `Update`, and `EffectHandler` in one place for creating a `Store`. 
+`StoreParams` is a container that holds `Init`, `Update`, and `EffectHandler` in one place for creating a `Store`. 
 `StoreParams` provides several convenient overridden functions for creating it with optional arguments.
 
 ```kotlin
 val storeParams = StoreParams<State, Msg, Effect, Deps>(
-    preEffectInit = { },
     init = { },
     update = { },
     effectHandler = { },

@@ -33,10 +33,10 @@ val update = Update<ConsistentState, ConsistentMsg, ConsistentEffect> { msg, mod
 }
 
 fun store(scope: CoroutineScope) = Store(
-    previousState = null,
+    savedState = null,
     coroutineScope = scope,
     params = StoreParams(
-        init = { previous -> (previous ?: ConsistentState(progress = false, loadedUser = null)) to emptySet() },
+        start = { savedState -> (savedState ?: ConsistentState(progress = false, loadedUser = null)) to emptySet() },
         update = update,
         effectHandler = { eff, dispatch ->
             when (eff) {

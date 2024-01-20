@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 internal fun counterFeatureParams(): FeatureParams<CounterState, CounterMsg, CounterViewState, ExternalMsg> = FeatureParams(
     storeParams = StoreParams<CounterState, CounterMsg, CounterEffect, ExternalMsg, InternalMsg>(
-        init = { previous -> (previous ?: CounterState(syncCount = 0, asyncCount = 0, isAsyncRunning = false)) to emptySet() },
+        start = { savedState -> (savedState ?: CounterState(syncCount = 0, asyncCount = 0, isAsyncRunning = false)) to emptySet() },
         externalUpdate = { msg, state ->
             when (msg) {
                 ExternalMsg.IncrementSync ->

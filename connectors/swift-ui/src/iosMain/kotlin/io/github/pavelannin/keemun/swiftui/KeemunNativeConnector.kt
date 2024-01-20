@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
  *
  * @see FeatureConnector
  */
-class KeemunNativeFeatureConnector<State : Any, Msg : Any> (
+class KeemunNativeConnector<State : Any, Msg : Any> (
     storeCreator: (scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
 ): FeatureConnector<State, Msg>, CoroutineScope by CoroutineScope(Dispatchers.Default) {
     private val store by storeCreator(this)
@@ -44,18 +44,18 @@ class KeemunNativeFeatureConnector<State : Any, Msg : Any> (
 }
 
 /**
- * Creates a [KeemunNativeFeatureConnector].
+ * Creates a [KeemunNativeConnector].
  *
  * @param featureParams Parameters used for creation.
  *
- * @see KeemunNativeFeatureConnector
+ * @see KeemunNativeConnector
  */
-inline fun <reified State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunNativeFeatureConnector(
+inline fun <reified State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunNativeConnector(
     featureParams: FeatureParams<State, Msg, ViewState, ExternalMsg>,
-) = KeemunNativeFeatureConnector(
+): KeemunNativeConnector<ViewState, ExternalMsg> = KeemunNativeConnector(
     storeCreator = { scope ->
         lazy {
-            Store(previousState = null, params = featureParams.storeParams, coroutineScope = scope)
+            Store(savedState = null, params = featureParams.storeParams, coroutineScope = scope)
                 .transform(stateTransform = featureParams.viewStateTransform, messageTransform = featureParams.externalMessageTransform)
         }.let { lazyStore ->
             when (featureParams.startedOptions) {
