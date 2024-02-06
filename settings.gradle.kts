@@ -13,7 +13,7 @@ dependencyResolutionManagement {
             from(files("dependencies.versions.toml"))
         }
     }
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
@@ -26,6 +26,7 @@ include(
     ":core",
     ":connectors:decompose",
     ":connectors:swift-ui",
+    ":plugins:template",
     ":sample:counter",
     ":sample:android",
 )

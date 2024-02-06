@@ -1,0 +1,15 @@
+<idea-plugin>
+    <id>io.github.pavelannin.keemun.plugin.template</id>
+    <name>Keemun Template</name>
+    <vendor>Pavel Annin</vendor>
+
+    <description>This plugin allows you to create features from templates</description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.android</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="com.android.tools.idea.wizard.template">
+        <wizardTemplateProvider implementation="io.github.pavelannin.keemun.plugin.template.KeemunTemplateProvider" />
+    </extensions>
+</idea-plugin>
