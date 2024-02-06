@@ -182,6 +182,15 @@ val featureParams = FeatureParams<State, Msg, ViewState, ExternalMsg>(
 )
 ```
 
+# Template generator plugin
+
+## Intellij / Android Studio
+
+1. Install the `Keemun template` plugin from the marketplace
+2. Open the context menu in the package, select: New -> Other -> Keemun feature
+3. Fill in the name of the feature
+4. Profit
+
 # Sample project
 The sample project is a screen with two counters: synchronous and asynchronous. The synchronous counter is modified in `Update`, 
 demonstrating state changes, while the asynchronous counter is modified in `EffectHandler`, simulating asynchronous business logic. 
