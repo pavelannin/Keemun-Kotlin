@@ -31,8 +31,8 @@ fun FeatureTemplate.effectHandler(): CodeBlock {
                         }                
                     }
                     
-                    private fun $inputEventName.toMsg(): $msgClassName = when (this) {
-                        
+                    private fun $inputEventName.toMsg(): $msgClassName {
+                        TODO()
                     }
                 """.trimIndent()
             )
@@ -57,8 +57,8 @@ fun FeatureTemplate.effectHandler(): CodeBlock {
                         }                
                     }
                     
-                    private fun $inputEventName.toMsg(): $msgClassName = when (this) {
-                        
+                    private fun $inputEventName.toMsg(): $msgClassName {
+                        TODO()
                     }
                 """.trimIndent()
             )
@@ -70,9 +70,7 @@ fun FeatureTemplate.effectHandler(): CodeBlock {
                 ),
                 code = """
                     internal fun $effectHandlerName() = EffectHandler<$effectName, $msgClassName> { effect, dispatch ->
-                        when (effect) {
-                            
-                        }                
+                                     
                     }
                 """.trimIndent()
             )

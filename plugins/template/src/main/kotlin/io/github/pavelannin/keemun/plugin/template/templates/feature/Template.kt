@@ -171,9 +171,9 @@ fun RecipeExecutor.setup(
                     template.msg(),
                     template.effect(),
                 ).combine().fileString(storePackage),
-                srcOut.resolve("store/StoreParams.kt"),
+                srcOut.resolve("store/${template.name.classPrefix}StoreParams.kt"),
             )
-            open(srcOut.resolve("store/StoreParams.kt"))
+            open(srcOut.resolve("store/${template.name.classPrefix}StoreParams.kt"))
         }
 
         FeatureTemplate.StoreStructure.Multi -> {
@@ -184,27 +184,27 @@ fun RecipeExecutor.setup(
                     template.inputEvent().takeIf { template.isInputEventNeed },
                     template.outputEvent().takeIf { template.isOutputEventNeed },
                 ).combine().fileString(storePackage),
-                srcOut.resolve("store/StoreParams.kt"),
+                srcOut.resolve("store/${template.name.classPrefix}StoreParams.kt"),
             )
-            open(srcOut.resolve("store/StoreParams.kt"))
+            open(srcOut.resolve("store/${template.name.classPrefix}StoreParams.kt"))
 
             save(
                 listOfNotNull(
                     template.update(),
                     template.msg(),
                 ).combine().fileString(storePackage),
-                srcOut.resolve("store/Update.kt"),
+                srcOut.resolve("store/${template.name.classPrefix}Update.kt"),
             )
-            open(srcOut.resolve("store/Update.kt"))
+            open(srcOut.resolve("store/${template.name.classPrefix}Update.kt"))
 
             save(
                 listOfNotNull(
                     template.effectHandler(),
                     template.effect(),
                 ).combine().fileString(storePackage),
-                srcOut.resolve("store/Effect.kt"),
+                srcOut.resolve("store/${template.name.classPrefix}Effect.kt"),
             )
-            open(srcOut.resolve("store/Effect.kt"))
+            open(srcOut.resolve("store/${template.name.classPrefix}Effect.kt"))
         }
     }
 
@@ -213,15 +213,15 @@ fun RecipeExecutor.setup(
             template.viewStateTransform(),
             template.viewState(),
         ).combine().fileString(storePackage),
-        srcOut.resolve("store/ViewState.kt"),
+        srcOut.resolve("store/${template.name.classPrefix}ViewState.kt"),
     )
-    open(srcOut.resolve("store/ViewState.kt"))
+    open(srcOut.resolve("store/${template.name.classPrefix}ViewState.kt"))
 
     if (template.isUiComposeNeed) {
         save(
             template.ui(storePackage).fileString(uiPackage),
-            srcOut.resolve("ui/Ui.kt"),
+            srcOut.resolve("ui/${template.name.classPrefix}Ui.kt"),
         )
-        open(srcOut.resolve("ui/Ui.kt"))
+        open(srcOut.resolve("ui/${template.name.classPrefix}Ui.kt"))
     }
 }

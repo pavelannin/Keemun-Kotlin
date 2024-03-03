@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.pavelannin.keemun.template"
-version = "1.0.2"
+version = "1.1.0"
 
 // Required as the "intellij" plugin is overriding the repositories from "settings.gradle"
 repositories {
@@ -22,8 +22,8 @@ intellij {
 
 tasks {
     patchPluginXml {
-        version.set("1.0.2")
+        version.set("1.1.0")
         sinceBuild.set("231")
-        untilBuild.set("241.*")
+        untilBuild.set("")
     }
 }

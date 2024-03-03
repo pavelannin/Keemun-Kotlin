@@ -20,6 +20,12 @@ fun FeatureTemplate.ui(storePackageName: String): CodeBlock {
             @Composable
             internal fun $uiName(store: Store<$viewStateName, $msgClassName>) {
                 val state by store.state.collectAsState()
+                Main(state)
+            }
+            
+            @Composable
+            private fun Main(state: $viewStateName) {
+                
             }
         """.trimIndent()
     )

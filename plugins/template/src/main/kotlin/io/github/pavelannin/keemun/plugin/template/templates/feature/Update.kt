@@ -10,9 +10,7 @@ fun FeatureTemplate.update(): CodeBlock = when (msgStructure) {
             ),
             code = """
                 internal val $updateName = Update<$stateName, $msgName, $effectName> { msg, state ->
-                    when (msg) {
-                                    
-                    }
+                    state to emptySet()
                 }
             """.trimIndent()
         )
@@ -24,15 +22,11 @@ fun FeatureTemplate.update(): CodeBlock = when (msgStructure) {
             ),
             code = """
                 internal val $externalUpdateName = Update<$stateName, $externalMsgName, $effectName> { msg, state ->
-                    when (msg) {
-                                    
-                    }
+                    state to emptySet()
                 }
                 
                 internal val $internalUpdateName = Update<$stateName, $internalMsgName, $effectName> { msg, state ->
-                    when (msg) {
-                                    
-                    }
+                    state to emptySet()
                 }
             """.trimIndent()
         )
