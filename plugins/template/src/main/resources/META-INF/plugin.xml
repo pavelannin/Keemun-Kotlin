@@ -3,7 +3,7 @@
     <name>Keemun Template</name>
     <vendor>Pavel Annin</vendor>
 
-    <description>This plugin allows you to create features from templates</description>
+    <description>Keemun plugin template, which will help you to create new components</description>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.android</depends>
