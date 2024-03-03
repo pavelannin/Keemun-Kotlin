@@ -1,3 +1,6 @@
+# v1.2.0
+- Fixed multiple subscription for updates in Jetpack Compose
+
 # v1.1.0
 ## Core
 - Renamed the `init` parameter to `start` from `StoreParams`

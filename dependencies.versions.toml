@@ -6,7 +6,7 @@ kotlin-serialization = "1.6.2"
 decompose = "2.2.1"
 androidX-compose-bom = "2023.10.01"
 androidX-compose = "1.5.4"
-keemun = "1.1.0"
+keemun = "1.2.0"
 
 [libraries]
 kotlin-std-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "kotlin-language" }

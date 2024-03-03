@@ -29,8 +29,8 @@ inline fun <InState : Any, InMsg : Any, OutState : Any, OutMsg : Any> Store<InSt
 ): Store<OutState, OutMsg> {
     val store = this
     return object : Store<OutState, OutMsg> {
-        override val scope: CoroutineScope get() = store.scope
-        override val state: StateFlow<OutState> get() = store.state
+        override val scope: CoroutineScope = store.scope
+        override val state: StateFlow<OutState> = store.state
             .mapLatest(stateTransform::invoke)
             .flowOn(Dispatchers.Default)
             .stateIn(
