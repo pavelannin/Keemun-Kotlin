@@ -14,12 +14,9 @@ fun FeatureTemplate.storeParams(): CodeBlock = when (msgStructure) {
                     effectHandler: EffectHandler<$effectName, $msgName>,
                 ) = StoreParams(
                     start = { savedState ->
-                        val initState by lazy {
-                            $stateName(
-                               data = "",
-                            )
-                        }
-                        val state = savedState ?: initState
+                        val state = savedState ?: $stateName(
+                            data = "",
+                        )
                         state to ${if (isInputEventNeed) "setOf($effectName.ObserveInputEvents)" else "emptySet()"}
                     },
                     update = $updateName,
@@ -39,12 +36,9 @@ fun FeatureTemplate.storeParams(): CodeBlock = when (msgStructure) {
                     effectHandler: EffectHandler<$effectName, $internalMsgName>,
                 ) = StoreParams(
                     start = { savedState ->
-                        val initState by lazy {
-                            $stateName(
-                               data = "",
-                            )
-                        }
-                        val state = savedState ?: initState
+                        val state = savedState ?: $stateName(
+                            data = "",
+                        )
                         state to ${if (isInputEventNeed) "setOf($effectName.ObserveInputEvents)" else "emptySet()"}
                     },
                     externalUpdate = $externalUpdateName,
