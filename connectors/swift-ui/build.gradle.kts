@@ -27,7 +27,7 @@ mavenPublishing {
     val artifactId = "keemun-swiftui"
     publishToMavenCentral(SonatypeHost.S01)
     signAllPublications()
-    coordinates("io.github.pavelannin", artifactId, "1.2.0")
+    coordinates("io.github.pavelannin", artifactId, "2.0.0")
     pom {
         name.set(artifactId)
         description.set("Keemun is a multiplatform Kotlin framework that provides a way to write shared code using The Elm Architecture pattern.")
