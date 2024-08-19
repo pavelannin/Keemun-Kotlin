@@ -26,17 +26,20 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(deps.keemun.core)
+            api(project(":core"))
+//            api(deps.keemun.core)
             api(deps.kotlin.serialization)
             implementation(deps.kotlin.std.common)
         }
         androidMain.dependencies {
-            api(deps.keemun.decompose)
+            api(project(":connectors:decompose"))
+//            api(deps.keemun.decompose)
             api(project.dependencies.platform(deps.androidX.compose.bom))
             api(deps.bundles.androidX.compose)
         }
         iosMain.dependencies {
-            implementation(deps.keemun.swiftui)
+            implementation(project(":connectors:swift-ui"))
+//            implementation(deps.keemun.swiftui)
         }
     }
 }

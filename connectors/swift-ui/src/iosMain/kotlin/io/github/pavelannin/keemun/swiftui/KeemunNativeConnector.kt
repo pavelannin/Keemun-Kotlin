@@ -2,7 +2,6 @@ package io.github.pavelannin.keemun.swiftui
 
 import io.github.pavelannin.keemun.core.connector.FeatureConnector
 import io.github.pavelannin.keemun.core.connector.FeatureParams
-import io.github.pavelannin.keemun.core.connector.FeatureStartedOptions
 import io.github.pavelannin.keemun.core.store.Store
 import io.github.pavelannin.keemun.core.store.transform
 import io.github.pavelannin.keemun.swiftui.interop.KotlinNativeStateFlow
@@ -23,9 +22,9 @@ import kotlinx.coroutines.withContext
  * @see FeatureConnector
  */
 class KeemunNativeConnector<State : Any, Msg : Any> (
-    storeCreator: (scope: CoroutineScope) -> Lazy<Store<State, Msg>>,
+    storeCreator: CoroutineScope.() -> Store<State, Msg>,
 ): FeatureConnector<State, Msg>, CoroutineScope by CoroutineScope(Dispatchers.Default) {
-    private val store by storeCreator(this)
+    private val store = storeCreator(this)
 
     override val state: StateFlow<State> get() = store.state
     override val scope: CoroutineScope get() = store.scope
@@ -53,15 +52,8 @@ class KeemunNativeConnector<State : Any, Msg : Any> (
 inline fun <reified State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunNativeConnector(
     featureParams: FeatureParams<State, Msg, ViewState, ExternalMsg>,
 ): KeemunNativeConnector<ViewState, ExternalMsg> = KeemunNativeConnector(
-    storeCreator = { scope ->
-        lazy {
-            Store(savedState = null, params = featureParams.storeParams, coroutineScope = scope)
-                .transform(stateTransform = featureParams.viewStateTransform, messageTransform = featureParams.externalMessageTransform)
-        }.let { lazyStore ->
-            when (featureParams.startedOptions) {
-                FeatureStartedOptions.Eagerly -> lazyStore.apply { value }
-                FeatureStartedOptions.Lazily -> lazyStore
-            }
-        }
+    storeCreator = {
+        Store(savedState = null, params = featureParams.storeParams, coroutineScope = this)
+            .transform(stateTransform = featureParams.viewStateTransform, messageTransform = featureParams.externalMessageTransform)
     }
 )
