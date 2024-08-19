@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
     spec.summary                  = 'Multiplatform sample feature'
     spec.vendored_frameworks      = 'build/cocoapods/framework/FeatureCounter.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '13.0'
+    spec.ios.deployment_target    = '13.0'
                 
                 
     if !Dir.exist?('build/cocoapods/framework/FeatureCounter.framework') || Dir.empty?('build/cocoapods/framework/FeatureCounter.framework')
@@ -21,6 +21,10 @@ Pod::Spec.new do |spec|
 
         Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
     end
+                
+    spec.xcconfig = {
+        'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO',
+    }
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sample:counter',

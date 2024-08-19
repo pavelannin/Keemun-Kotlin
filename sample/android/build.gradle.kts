@@ -2,6 +2,7 @@ plugins {
     alias(deps.plugins.android.application)
     alias(deps.plugins.kotlin.android)
     alias(deps.plugins.kotlin.serialization)
+    alias(deps.plugins.kotlin.compose)
 }
 
 android {
@@ -23,7 +24,7 @@ android {
     }
 
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.4"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.15"
 
     packaging {
         resources {
@@ -41,5 +42,4 @@ android {
 
 dependencies {
     implementation(project(":sample:counter"))
-    implementation(deps.decompose.compose)
 }

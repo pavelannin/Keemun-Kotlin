@@ -3,6 +3,7 @@ plugins {
     alias(deps.plugins.kotlin.serialization)
     alias(deps.plugins.kotlin.cocoapods)
     alias(deps.plugins.android.library)
+    alias(deps.plugins.kotlin.compose)
 }
 
 kotlin {
@@ -52,5 +53,5 @@ android {
     }
 
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.4"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.15"
 }
