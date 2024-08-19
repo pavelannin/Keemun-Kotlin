@@ -1,3 +1,11 @@
+# v2.0.0
+- Updated Kotlin to 2.0.10, Compose to 1.6.10 and other dependencies
+- Moved StartedOptions from FeatureParams to KeemunComponentConnector
+- Redesigned saving the state of the store. Added 3 implementations: 
+  - stateless (default), 
+  - save Store.state (if state serializable), 
+  - save the state transformed into another model
+
 # v1.2.0
 - Fixed multiple subscription for updates in Jetpack Compose
 
