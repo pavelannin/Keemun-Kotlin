@@ -1,10 +1,10 @@
 [versions]
-android-gradle-plugin = "8.2.2"
-kotlin-language = "2.0.10"
-kotlin-coroutines = "1.8.1"
-kotlin-serialization = "1.7.1"
-decompose = "3.1.0"
-androidX-compose-bom = "2024.06.00"
+android-gradle-plugin = "8.9.1"
+kotlin-language = "2.1.20"
+kotlin-coroutines = "1.10.2"
+kotlin-serialization = "1.8.1"
+decompose = "3.3.0"
+androidX-compose-bom = "2025.04.00"
 keemun = "1.2.0"
 
 [libraries]
