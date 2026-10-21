@@ -6,6 +6,8 @@ import io.github.pavelannin.keemun.core.connector.FeatureParams
 import io.github.pavelannin.keemun.core.store.Store
 import io.github.pavelannin.keemun.core.store.transform
 import io.github.pavelannin.keemun.decompose.owners.CoroutineScopeOwner
+    import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.KSerializer
@@ -54,6 +56,8 @@ interface KeemunComponentConnector<State : Any, Msg : Any> : ComponentContext, C
  * @param componentContext The context for aggregating the creation of [KeemunComponentConnector].
  * @param storeCreator The function for creating the [Store].
  * @param startedOptions Options that determine the initialization of the [Store].
+ * @param coroutineContext Additional context of the feature scope passed to the [Store].
+ * A [kotlinx.coroutines.CoroutineExceptionHandler] from this context receives uncaught Update and Effect exceptions.
  *
  * @see KeemunComponentConnector
  * @see KeemunComponentConnector.StartedOptions
@@ -62,9 +66,11 @@ fun <State : Any, Msg : Any> KeemunComponentConnector(
     componentContext: ComponentContext,
     storeCreator: CoroutineScope.(savedState: State?) -> Store<State, Msg>,
     startedOptions: KeemunComponentConnector.StartedOptions = KeemunComponentConnector.StartedOptions.Lazily,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
 ): KeemunComponentConnector<State, Msg> = NoSavedStateComponentConnector(
     componentContext = componentContext,
     creatorStoreHolder = { StoreHolder(startedOptions) { storeCreator(this, null) } },
+    coroutineContext = coroutineContext,
 )
 
 /**
@@ -75,6 +81,8 @@ fun <State : Any, Msg : Any> KeemunComponentConnector(
  * @param stateSerializer The serializer used for saving and restoring the state.
  * @param startedOptions Options that determine the initialization of the [Store].
  * @param savedStateKey Unique name with which the [State] will be saved.
+ * @param coroutineContext Additional context of the feature scope passed to the [Store].
+ * A [kotlinx.coroutines.CoroutineExceptionHandler] from this context receives uncaught Update and Effect exceptions.
  *
  * @see KeemunComponentConnector
  * @see KeemunComponentConnector.StartedOptions
@@ -85,12 +93,14 @@ fun <State : Any, Msg : Any> KeemunComponentConnector(
     stateSerializer: KSerializer<State>,
     startedOptions: KeemunComponentConnector.StartedOptions = KeemunComponentConnector.StartedOptions.Lazily,
     savedStateKey: String = KeemunComponentConnector.KEY_FEATURE_STATE,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
 ): KeemunComponentConnector<State, Msg> = SavedStateComponentConnector(
     componentContext = componentContext,
     creatorStoreHolder = { savedState -> StoreHolder(startedOptions) { storeCreator(this, savedState) } },
     savedStateSerializer = stateSerializer,
     savedStateConverter = KeemunComponentConnector.Converter(),
     savedStateKey = savedStateKey,
+    coroutineContext = coroutineContext,
 )
 
 /**
@@ -102,6 +112,8 @@ fun <State : Any, Msg : Any> KeemunComponentConnector(
  * @param savedStateConverter Converter used before saving or restoring a [State].
  * @param startedOptions Options that determine the initialization of the [Store].
  * @param savedStateKey Unique name with which the [State] will be saved.
+ * @param coroutineContext Additional context of the feature scope passed to the [Store].
+ * A [kotlinx.coroutines.CoroutineExceptionHandler] from this context receives uncaught Update and Effect exceptions.
  *
  * @see KeemunComponentConnector
  * @see KeemunComponentConnector.StartedOptions
@@ -113,12 +125,14 @@ fun <SavedState: Any, State : Any, Msg : Any> KeemunComponentConnector(
     savedStateConverter: KeemunComponentConnector.Converter<State?, SavedState?>,
     startedOptions: KeemunComponentConnector.StartedOptions = KeemunComponentConnector.StartedOptions.Lazily,
     savedStateKey: String = KeemunComponentConnector.KEY_FEATURE_STATE,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
 ): KeemunComponentConnector<State, Msg> = SavedStateComponentConnector(
     componentContext = componentContext,
     creatorStoreHolder = { savedState -> StoreHolder(startedOptions) { storeCreator(this, savedState) } },
     savedStateSerializer = savedStateSerializer,
     savedStateConverter = savedStateConverter,
     savedStateKey = savedStateKey,
+    coroutineContext = coroutineContext,
 )
 
 /**
@@ -127,6 +141,8 @@ fun <SavedState: Any, State : Any, Msg : Any> KeemunComponentConnector(
  * @param componentContext The context for aggregating the creation of [KeemunComponentConnector].
  * @param featureParams Parameters used for creation.
  * @param startedOptions Options that determine the initialization of the [Store].
+ * @param coroutineContext Additional context of the feature scope passed to the [Store].
+ * A [kotlinx.coroutines.CoroutineExceptionHandler] from this context receives uncaught Update and Effect exceptions.
  *
  * @see KeemunComponentConnector
  */
@@ -134,13 +150,15 @@ inline fun <State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunCo
     componentContext: ComponentContext,
     featureParams: FeatureParams<State, Msg, ViewState, ExternalMsg>,
     startedOptions: KeemunComponentConnector.StartedOptions = KeemunComponentConnector.StartedOptions.Lazily,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
 ): KeemunComponentConnector<ViewState, ExternalMsg> = object : KeemunComponentConnector<ViewState, ExternalMsg>,
     ComponentContext by componentContext,
-    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
+    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(coroutineContext = coroutineContext),
     Store<ViewState, ExternalMsg> by KeemunComponentConnector(
         componentContext = componentContext,
         storeCreator = { savedState: State? -> Store(savedState, params = featureParams.storeParams, coroutineScope = this) },
         startedOptions = startedOptions,
+        coroutineContext = coroutineContext,
     ).transform(
         stateTransform = featureParams.viewStateTransform,
         messageTransform = featureParams.externalMessageTransform,
@@ -154,6 +172,8 @@ inline fun <State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunCo
  * @param stateSerializer The serializer used for saving and restoring the state.
  * @param startedOptions Options that determine the initialization of the [Store].
  * @param savedStateKey Unique name with which the [State] will be saved.
+ * @param coroutineContext Additional context of the feature scope passed to the [Store].
+ * A [kotlinx.coroutines.CoroutineExceptionHandler] from this context receives uncaught Update and Effect exceptions.
  *
  * @see KeemunComponentConnector
  * @see KeemunComponentConnector.StartedOptions
@@ -164,15 +184,17 @@ inline fun <State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunCo
     stateSerializer: KSerializer<State>,
     startedOptions: KeemunComponentConnector.StartedOptions = KeemunComponentConnector.StartedOptions.Lazily,
     savedStateKey: String = KeemunComponentConnector.KEY_FEATURE_STATE,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
 ): KeemunComponentConnector<ViewState, ExternalMsg> = object : KeemunComponentConnector<ViewState, ExternalMsg>,
     ComponentContext by componentContext,
-    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
+    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(coroutineContext = coroutineContext),
     Store<ViewState, ExternalMsg> by KeemunComponentConnector(
         componentContext = componentContext,
         storeCreator = { savedState: State? -> Store(savedState, params = featureParams.storeParams, coroutineScope = this) },
         stateSerializer = stateSerializer,
         startedOptions = startedOptions,
         savedStateKey = savedStateKey,
+        coroutineContext = coroutineContext,
     ).transform(
         stateTransform = featureParams.viewStateTransform,
         messageTransform = featureParams.externalMessageTransform,
@@ -187,6 +209,8 @@ inline fun <State : Any, Msg : Any, ViewState : Any, ExternalMsg : Msg> KeemunCo
  * @param savedStateConverter Converter used before saving or restoring a [State].
  * @param startedOptions Options that determine the initialization of the [Store].
  * @param savedStateKey Unique name with which the [State] will be saved.
+ * @param coroutineContext Additional context of the feature scope passed to the [Store].
+ * A [kotlinx.coroutines.CoroutineExceptionHandler] from this context receives uncaught Update and Effect exceptions.
  *
  * @see KeemunComponentConnector
  * @see KeemunComponentConnector.StartedOptions
@@ -198,9 +222,10 @@ inline fun <SavedState: Any, State : Any, Msg : Any, ViewState : Any, ExternalMs
     savedStateConverter: KeemunComponentConnector.Converter<State?, SavedState?>,
     startedOptions: KeemunComponentConnector.StartedOptions = KeemunComponentConnector.StartedOptions.Lazily,
     savedStateKey: String = KeemunComponentConnector.KEY_FEATURE_STATE,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
 ): KeemunComponentConnector<ViewState, ExternalMsg> = object : KeemunComponentConnector<ViewState, ExternalMsg>,
     ComponentContext by componentContext,
-    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
+    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(coroutineContext = coroutineContext),
     Store<ViewState, ExternalMsg> by KeemunComponentConnector(
         componentContext = componentContext,
         storeCreator = { savedState: State? -> Store(savedState, params = featureParams.storeParams, coroutineScope = this) },
@@ -208,6 +233,7 @@ inline fun <SavedState: Any, State : Any, Msg : Any, ViewState : Any, ExternalMs
         savedStateConverter = savedStateConverter,
         startedOptions = startedOptions,
         savedStateKey = savedStateKey,
+        coroutineContext = coroutineContext,
     ).transform(
         stateTransform = featureParams.viewStateTransform,
         messageTransform = featureParams.externalMessageTransform,
@@ -216,9 +242,10 @@ inline fun <SavedState: Any, State : Any, Msg : Any, ViewState : Any, ExternalMs
 private class NoSavedStateComponentConnector<State : Any, Msg : Any>(
     componentContext: ComponentContext,
     creatorStoreHolder: CoroutineScope.() -> StoreHolder<State, Msg>,
+    coroutineContext: CoroutineContext,
 ) : KeemunComponentConnector<State, Msg>,
     ComponentContext by componentContext,
-    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
+    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(coroutineContext = coroutineContext),
     Store<State, Msg> {
 
     private val storeHolder = creatorStoreHolder(coroutineScope)
@@ -236,9 +263,10 @@ private class SavedStateComponentConnector<SavedState : Any, State : Any, Msg : 
     savedStateSerializer: KSerializer<SavedState>,
     savedStateConverter: KeemunComponentConnector.Converter<State?, SavedState?>,
     savedStateKey: String,
+    coroutineContext: CoroutineContext,
 ) : KeemunComponentConnector<State, Msg>,
     ComponentContext by componentContext,
-    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(),
+    CoroutineScopeOwner by componentContext.CoroutineScopeOwner(coroutineContext = coroutineContext),
     Store<State, Msg> {
 
     private val storeHolder = creatorStoreHolder(
