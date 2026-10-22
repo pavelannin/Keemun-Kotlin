@@ -1,3 +1,6 @@
+# v3.0.0
+- Added `coroutineContext` parameter to `KeemunComponentConnector` and `LifecycleOwner.CoroutineScopeOwner`. A `CoroutineExceptionHandler` from this context receives uncaught exceptions thrown by Update and Effect.
+
 # v2.0.0
 - Updated Kotlin to 2.0.10, Compose to 1.6.10 and other dependencies
 - Moved StartedOptions from FeatureParams to KeemunComponentConnector

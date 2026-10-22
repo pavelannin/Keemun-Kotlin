@@ -43,4 +43,4 @@ kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref =
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-language" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-language" }
 maven-publish = { id ="com.vanniktech.maven.publish", version = "0.27.0" }
-intellij = { id = "org.jetbrains.intellij", version = "1.16.1" }
+intellij = { id = "org.jetbrains.intellij", version = "1.17.4" }
